@@ -64,7 +64,7 @@ async function loadParquetFile() {
         hideError();
 
         // Fetch the parquet file
-        const response = await fetch('data/sample_data.parquet');
+        const response = await fetch('public/data/sample_data.parquet');
 
         if (!response.ok) {
             throw new Error(`Failed to fetch parquet file: ${response.statusText}`);
