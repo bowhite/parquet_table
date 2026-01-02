@@ -1,63 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Parquet Table Viewer</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
     <div class="container">
-        <h1>Parquet Table Viewer</h1>
+      <h1>Parquet Table Viewer</h1>
 
-        <div id="stats" class="stats">
-            <div class="stat-card">
-                <div class="stat-label">Total Rows</div>
-                <div class="stat-value" id="totalRows">-</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Columns</div>
-                <div class="stat-value" id="totalColumns">-</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">File Size</div>
-                <div class="stat-value" id="fileSize">-</div>
-            </div>
+      <div id="stats" class="stats">
+        <div class="stat-card">
+          <div class="stat-label">Total Rows</div>
+          <div class="stat-value" id="totalRows">-</div>
         </div>
-
-        <div class="controls">
-            <button id="loadBtn">Load Data</button>
-            <label>
-                Rows per page:
-                <input type="number" id="rowsPerPage" value="100" min="10" max="1000" step="10">
-            </label>
+        <div class="stat-card">
+          <div class="stat-label">Columns</div>
+          <div class="stat-value" id="totalColumns">-</div>
         </div>
-
-        <div id="error" style="display: none;" class="error"></div>
-        <div id="loading" class="loading" style="display: none;">Loading parquet file...</div>
-
-        <div class="table-container">
-            <table id="dataTable">
-                <thead id="tableHead"></thead>
-                <tbody id="tableBody"></tbody>
-            </table>
+        <div class="stat-card">
+          <div class="stat-label">File Size</div>
+          <div class="stat-value" id="fileSize">-</div>
         </div>
+      </div>
 
-        <div class="pagination">
-            <div class="pagination-info" id="paginationInfo"></div>
-            <div class="pagination-controls">
-                <button id="firstBtn">First</button>
-                <button id="prevBtn">Previous</button>
-                <button id="nextBtn">Next</button>
-                <button id="lastBtn">Last</button>
-            </div>
+      <div class="controls">
+        <button id="loadBtn">Load Data</button>
+        <label>
+          Rows per page:
+          <input
+            type="number"
+            id="rowsPerPage"
+            value="100"
+            min="10"
+            max="1000"
+            step="10"
+          />
+        </label>
+      </div>
+
+      <div id="error" style="display: none" class="error"></div>
+      <div id="loading" class="loading" style="display: none">
+        Loading parquet file...
+      </div>
+
+      <div class="table-container">
+        <table id="dataTable">
+          <thead id="tableHead"></thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+
+      <div class="pagination">
+        <div class="pagination-info" id="paginationInfo"></div>
+        <div class="pagination-controls">
+          <button id="firstBtn">First</button>
+          <button id="prevBtn">Previous</button>
+          <button id="nextBtn">Next</button>
+          <button id="lastBtn">Last</button>
         </div>
+      </div>
     </div>
-
-    <!-- Load parquet-wasm from CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/parquet-wasm@0.6.1/esm/parquet_wasm.js" type="module"></script>
 
     <!-- Load our custom script as a module -->
     <script src="index.js" type="module"></script>
-</body>
+  </body>
 </html>

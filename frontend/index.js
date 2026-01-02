@@ -1,4 +1,5 @@
-import * as parquet from 'https://cdn.jsdelivr.net/npm/parquet-wasm@0.6.1/esm/parquet_wasm.js';
+import * as parquet from 'https://cdn.jsdelivr.net/npm/parquet-wasm@0.7.1/esm/parquet_wasm.js';
+import { tableFromIPC } from 'https://esm.sh/apache-arrow@21.1.0?bundle-deps';
 
 // Global state
 let parquetData = null;
@@ -73,12 +74,30 @@ async function loadParquetFile() {
         const arrayBuffer = await response.arrayBuffer();
         const uint8Array = new Uint8Array(arrayBuffer);
 
-        // Parse parquet file
-        parquetData = parquet.readParquet(uint8Array);
+        // Parse parquet file - parquet-wasm returns Arrow IPC stream
+        const wasmTable = parquet.readParquet(uint8Array);
+
+        // Convert to Arrow IPC stream and read with apache-arrow
+        const ipcStream = wasmTable.intoIPCStream();
+        const arrowTable = tableFromIPC(ipcStream);
+
+        console.log('Arrow table:', arrowTable);
+        console.log('numRows:', arrowTable.numRows);
+        console.log('schema fields:', arrowTable.schema.fields);
+
+        // Get columns from Arrow table
+        const columns = arrowTable.schema.fields.map(f => f.name);
+        const rowCount = arrowTable.numRows;
+
+        // Store data for rendering
+        parquetData = {
+            table: arrowTable,
+            columns: columns,
+            numRows: rowCount
+        };
 
         // Get metadata
-        totalRows = parquetData.numRows;
-        const columns = parquetData.schema.fields.map(field => field.name);
+        totalRows = rowCount;
 
         // Update stats
         totalRowsSpan.textContent = totalRows.toLocaleString();
@@ -105,7 +124,7 @@ async function loadParquetFile() {
 function renderTable() {
     if (!parquetData) return;
 
-    const columns = parquetData.schema.fields.map(field => field.name);
+    const columns = parquetData.columns;
 
     // Render table header
     tableHead.innerHTML = '';
@@ -127,9 +146,9 @@ function renderTable() {
     for (let i = startIdx; i < endIdx; i++) {
         const row = document.createElement('tr');
 
-        columns.forEach(column => {
+        columns.forEach((_column, colIdx) => {
             const td = document.createElement('td');
-            const columnData = parquetData.getColumn(column);
+            const columnData = parquetData.table.getChildAt(colIdx);
             const value = columnData.get(i);
 
             // Format value
